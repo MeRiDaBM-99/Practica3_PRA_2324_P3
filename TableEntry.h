@@ -38,8 +38,8 @@ class TableEntry {
 
 	friend ostream& operator<<(ostream &out, const TableEntry<V> &te){
 		out = te.key;
-		out = "->";
-		out = te.value;
+		out += "->";
+		out += te.value;
 
 		return out;
 	}
