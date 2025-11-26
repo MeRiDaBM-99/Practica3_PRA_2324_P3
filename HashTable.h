@@ -38,10 +38,13 @@ class HashTable: public Dict<V> {
 	}
 
 	friend ostream& operator<<(ostream &out, const HashTable<V> &th){
-        	for (int i = 0; i < th.max; i++) {
-            		out << " Entrada " << i << ": ";
-            		out << th.table[i] << endl;
+        	out << "HashTable [entries: " << th.n << ", capacity: " << th.max << "]" << endl;
+		out << "============" << endl << endl;
+		for (int i = 0; i < th.max; i++) {
+            		out << "== Cubeta " << i << " ==" << endl << endl;
+            		out << "List => " << th.table[i] << endl << endl;
         	}
+		out << "=============" << endl << endl;
         	return out;	
 	}
 
@@ -64,7 +67,7 @@ class HashTable: public Dict<V> {
         	}
 
         	//SINO
-        	posicion.append(TableEntry<V>(key, value));
+        	posicion.prepend(TableEntry<V>(key, value));
         	n++;
 	}
 
