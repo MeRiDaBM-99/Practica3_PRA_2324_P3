@@ -43,11 +43,11 @@ class BSTreeDict: public Dict<V> {
 		//Verifica si ya existe la key
 		try{
 			tree->search(prueba);
-			throw runtime_error("La key ya existe);
+			throw runtime_error("La key ya existe");
 		} catch (const runtime_error&){
 			//Si la clase no existe la añadimos
-			TableEntry<V> entranda(key, value);
-			tree->insert(entry);
+			TableEntry<V> entrada(key, value);
+			tree->insert(entrada);
 		}
 	}
 
