@@ -14,70 +14,84 @@ class BSTreeDict: public Dict<V> {
 
     private:
         //ATRIBUTOS
-	BSTree<TableEntry<V>>* tree;
+        BSTree<TableEntry<V>>* tree;
 
     public:
         //MÉTODOS
-	BSTreeDict(){
-		tree = new BSTree<TableEntry<V>>();
-	}
+        BSTreeDict(){
+            tree = new BSTree<TableEntry<V>>();
+        }
 
-	~BSTreeDict(){
-		delete tree;
-	}
+        ~BSTreeDict(){
+            delete tree;
+        }
 
-	friend ostream& operator<<(ostream &out, const BSTreeDict<V> &bs){
-		out << *bs.tree;
-		return out;
-	}
+        friend ostream& operator<<(ostream &out, const BSTreeDict<V> &bs){
+            out << *bs.tree;
+            return out;
+        }
 
-	V operator[](string key){
-		return search(key);
-	}
+        V operator[](string key){
+            return search(key);
+        }
 
-	//MÉTODOS HEREDADOS DE DICT<T>
-	void insert(string key, V value) override{
-		//Se crea una entrada auxiliar para ver si ya existe la key
-		TableEntry<V> prueba(key, V());
+        //MÉTODOS HEREDADOS DE DICT<V>
+        void insert(string key, V value) override{
+            TableEntry<V> prueba(key, V());
+            
+            // Variable para controlar si existe
+            bool existe = false;
+            
+            // Verifica si ya existe la key
+            try{
+                tree->search(prueba);
+                // Si no lanza excepción, la clave existe
+                existe = true;
+            } catch (const runtime_error&){
+                // Si lanza excepción, la clave NO existe
+                existe = false;
+            }
+            
+            // Ahora decidimos qué hacer
+            if(existe){
+                throw runtime_error("La key ya existe");
+            } else {
+                TableEntry<V> entrada(key, value);
+                tree->insert(entrada);
+            }
+        }
 
-		//Verifica si ya existe la key
-		try{
-			tree->search(prueba);
-			throw runtime_error("La key ya existe");
-		} catch (const runtime_error&){
-			//Si la clase no existe la añadimos
-			TableEntry<V> entrada(key, value);
-			tree->insert(entrada);
-		}
-	}
+        V search(string key) override{
+            TableEntry<V> prueba(key, V());
 
-	V search(string key) override{
-		TableEntry<V> prueba(key, V());
-
-		try{
-			TableEntry<V> result = tree->search(prueba);
-			return result.value;
-		} catch (const runtime_error&){
-			throw runtime_error("La key no se ha encontrado");
-		}
-	}
+            try{
+                TableEntry<V> result = tree->search(prueba);
+                return result.value;
+            } catch (const runtime_error&){
+                throw runtime_error("La key no se ha encontrado");
+            }
+        }
         
+        V remove(string key) override {
+            TableEntry<V> prueba(key, V());
+        
+            // Primero buscamos el elemento para obtener su valor
+            try {
+                TableEntry<V> found = tree->search(prueba);
+                V valueToReturn = found.value;
+            
+                // Ahora eliminamos el elemento (tree->remove devuelve void)
+                tree->remove(prueba);
+            
+                return valueToReturn;
+            } catch (const runtime_error&) {
+                throw runtime_error("La key no se ha encontrado");
+            }
+        }
 
-	V remove(string key) override {
-		TableEntry<V> prueba(key, V());
-
-		try{
-			TableEntry<V> eliminar = tree->remove(prueba);
-			return eliminar.value;
-		} catch (const runtime_error&){
-			throw runtime_error("La key no se ha encontrado");
-		}
-	}
-
-
-	int entries() override {
-		return tree->size();
-	}
+        int entries() override {
+            return tree->size();
+        }
 };
 
 #endif
